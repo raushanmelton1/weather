@@ -12,6 +12,7 @@
 		display: none;
 		text-align: center;
 	}
+
 	#forecast div{
 		width: 25vw;
 		border: 8px solid blue;
@@ -22,52 +23,39 @@
 		width:100%;
 	}
 </style>
+
 <script>
     function gettingJSON(){
     	console.log("Hi")
 
-    	var 'YourWeatherAppID' = 'd83da6edf31c80e99d27d7579d169ccb';
-    	var location = $("#location");
-    	var f = $("fahreheit");
-    	var c = $("#celcius");
-    	if ((location.val().length) ==0){
-    		var city = "Ann+Arbor";
-    	}
-    	else{
-    		var city = location.val();
-    	}
-    	if ((f.is(":checked"))){
-    		var units = f.val();
-    	}
-    	if ((c.is(":checked"))){
-    		var units = c.val();
-    	}
-    	else{
-    		var units = "imperial";
-    	}
-    	console.log(city);
-    	// Use the OpenWeather API to return:
-    	//  the current temperature 
-    	//  the high temperature for the day
-    	//  the low temperature for the day
-    	//  the icon for the current weather.
-
-
-
-    	// You will need to update this query with the city, weather format (Celsius or Fahrenheit) and your OpenWeatherMap ID
-  	// Right now I have it set to Chicago.  The default should be Ann Abor/Fahreheit.
-   let query = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&APPID="+YourWeatherAppID+"&units="+units;
-        console.log("Query is :" + query);
-        $.getJSON(query,function(json){
+    	let YourWeatherAppID = "f31363951af13e2de8b8f3621fc009f2"; /*using API key from last semester*/ 
+        var c= "Ann Arbor";
+        
+        if($('#location').val()) {
+            console.log($('#location').val());
+            c = $('#location').val();
+        };
+        var d = "imperial";
+        if($('input[name="temp"]:checked').val()) {
+            console.log($('input[name="temp"]:checked').val());
+            d = $('input[name="temp"]:checked').val();
+        };
+        let q = "https://api.openweathermap.org/data/2.5/weather?q=" + c
+            + "&units=" + d 
+            + "&APPID=" +YourWeatherAppID;
+            console.log("Query is :" + q)
+        $.getJSON(q, function(json){
             console.log(JSON.stringify(json));
-			$('#tempImg').attr('src', "http://openweathermap.org/img/wn/" + json.weather[0]['icon'] + '@2x.png');
-			$("#loc").html(json.name);
-			$("#temp").html(json["main"].temp);
-			$("#high").html(json["main"].temp_max);
-			$("#low").html(json["main"].temp_min);
-			$("#forecast").css("display","block");
-    })
-    }
+            let url = "https://openweathermap.org/img/w/" + json.weather[0].icon + ".png"; /*asked katie forrest for explanation on indexing image*/
+            $('#forecast').show();
+            $('#tempImg').attr('src', url);
+            $('#tempImg').attr('alt', json.weather[0].description);
+            $('#loc').text(json.name);
+            $('#temp').text(json.main.temp);
+            $('#high').text(json.main.temp_max);
+            $('#low').text(json.main.temp_min);
+        });
+    };
     </script>
 </head>
 <body>
